@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pelatihan Penatalaksanaan Keperawatan Perioperatif | HIPKABI</title>
+<style>
+  :root{
+    --biru:#009688; --biru2:#26a69a; --biru3:#e0f7f5;
+    --hijau:#2e7d32; --merah:#c62828; --kuning:#f9a825;
+    --abu:#f5f7fa; --teks:#1a2733; --radius:14px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:'Segoe UI',system-ui,-apple-system,Arial,sans-serif; background:linear-gradient(160deg,#1fd1b2 0%,#40e0d0 45%,#a8f5e9 100%); min-height:100vh; color:var(--teks); display:flex; align-items:center; justify-content:center; padding:16px;}
+  .kartu{background:#fff; border-radius:var(--radius); box-shadow:0 12px 40px rgba(0,0,0,.25); max-width:680px; width:100%; padding:32px 28px; display:none;}
+  .kartu.aktif{display:block; animation:muncul .25s ease;}
+  @keyframes muncul{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;}}
+  .brand{display:flex; align-items:center; gap:10px; justify-content:center; margin-bottom:14px; color:var(--biru); font-weight:700;}
+  
+  .label-atas{text-align:center; letter-spacing:2px; font-size:12px; color:var(--biru2); font-weight:700; margin-bottom:8px;}
+  h1{text-align:center; font-size:26px; color:var(--biru); margin-bottom:12px; line-height:1.3;}
+  .deskripsi{text-align:center; color:#4a5a6a; font-size:14.5px; margin-bottom:20px; line-height:1.55;}
+  .chips{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px;}
+  .chip{background:var(--abu); border:1px solid #e1e8ef; border-radius:10px; padding:12px 14px; font-size:13.5px; line-height:1.4;}
+  .peringatan{background:#fff8e1; border:1px solid #ffe082; border-radius:10px; padding:12px 14px; font-size:13.5px; line-height:1.5; margin-bottom:20px;}
+  .btn{display:block; width:100%; border:none; border-radius:10px; padding:15px; font-size:16px; font-weight:700; cursor:pointer; transition:transform .1s, box-shadow .1s;}
+  .btn:active{transform:scale(.98);}
+  .btn-utama{background:var(--biru); color:#fff; box-shadow:0 6px 16px rgba(0,150,136,.35);}
+  #ujian{position:relative; overflow:hidden;}
+  #ujian.buram .pertanyaan, #ujian.buram #wadahOpsi{filter:blur(14px); pointer-events:none;}
+  .watermark{position:absolute; inset:0; pointer-events:none; z-index:5; overflow:hidden; display:none;}
+  #ujian.aktif .watermark{display:block;}
+  .watermark span{position:absolute; white-space:nowrap; font-size:13px; font-weight:700; color:rgba(0,150,136,.13); transform:rotate(-25deg); user-select:none;}
+  .pesan-buram{display:none; position:absolute; inset:0; z-index:6; background:rgba(255,255,255,.6); align-items:center; justify-content:center; text-align:center; font-weight:700; color:var(--merah); padding:30px; font-size:15px;}
+  #ujian.buram .pesan-buram{display:flex;}
+  .btn-utama:hover{background:var(--biru2);}
+  .btn-abu{background:#eceff1; color:#455a64; margin-top:10px;}
+  .versi{text-align:center; font-size:12px; color:#90a4ae; margin-top:16px;}
+  .form-grup{margin-bottom:16px;}
+  .form-grup label{display:block; font-weight:600; font-size:14px; margin-bottom:6px;}
+  .form-grup input, .form-grup select{width:100%; padding:12px 14px; border:1.5px solid #cfd8dc; border-radius:10px; font-size:15px;}
+  .form-grup input:focus, .form-grup select:focus{outline:none; border-color:var(--biru2);}
+  .galat{color:var(--merah); font-size:12.5px; margin-top:4px; display:none;}
+  .bar-atas{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
+  .bar-atas .kotak{background:var(--abu); border-radius:10px; padding:8px 14px; text-align:center;}
+  .bar-atas .kotak small{display:block; font-size:10.5px; letter-spacing:1px; color:#78909c; font-weight:700;}
+  .bar-atas .kotak b{font-size:17px; color:var(--biru);}
+  #sisaWaktu.bahaya b{color:var(--merah);}
+  .progres{height:6px; background:#e1e8ef; border-radius:3px; margin-bottom:18px; overflow:hidden;}
+  .progres i{display:block; height:100%; background:var(--biru2); border-radius:3px; transition:width .25s;}
+  .pertanyaan{font-size:16.5px; font-weight:600; line-height:1.55; margin-bottom:16px; min-height:52px;}
+  .opsi{border:1.5px solid #cfd8dc; border-radius:10px; padding:13px 15px; margin-bottom:10px; cursor:pointer; font-size:15px; line-height:1.45; display:flex; gap:10px; align-items:flex-start; transition:all .12s;}
+  .opsi:hover{border-color:var(--biru2); background:var(--biru3);}
+  .opsi.dipilih{border-color:var(--biru); background:var(--biru3); font-weight:600;}
+  .opsi .huruf{font-weight:700; color:var(--biru);}
+  .nav{display:flex; gap:10px; margin-top:18px;}
+  .nav .btn{width:auto; flex:1; padding:13px;}
+  .btn-selesai{background:var(--hijau); color:#fff; display:none;}
+  .nomor-grid{display:flex; flex-wrap:wrap; gap:6px; margin-top:16px; justify-content:center;}
+  .nomor-grid span{width:34px; height:34px; border-radius:8px; background:#eceff1; color:#546e7a; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; cursor:pointer;}
+  .nomor-grid span.terjawab{background:var(--biru2); color:#fff;}
+  .nomor-grid span.sekarang{outline:2.5px solid var(--kuning);}
+  .skor-lingkaran{width:150px; height:150px; border-radius:50%; margin:16px auto; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; box-shadow:0 8px 24px rgba(0,0,0,.2);}
+  .skor-lingkaran b{font-size:44px;}
+  .skor-lingkaran small{font-size:12px; opacity:.9;}
+  .rekap{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin:18px 0;}
+  .rekap div{background:var(--abu); border-radius:10px; padding:12px; text-align:center; font-size:13px;}
+  .rekap b{display:block; font-size:22px;}
+  .rekap .benar b{color:var(--hijau);} .rekap .salah b{color:var(--merah);} .rekap .kosong b{color:#78909c;}
+  .terkunci-info{background:#eceff1; border-radius:10px; padding:14px; font-size:13.5px; text-align:center; line-height:1.5; margin-top:14px;}
+  .ikon-besar{font-size:52px; text-align:center; margin-bottom:10px;}
+  @media (max-width:480px){ .chips{grid-template-columns:1fr;} h1{font-size:22px;} .kartu{padding:24px 18px;} }
+</style>
+</head>
+<body>
+
+<!-- ===== BERANDA ===== -->
+<div class="kartu aktif" id="beranda">
+  <div class="brand">PW HIPKABI DKI JAKARTA</div>
+  <div class="label-atas">BIDANG DIKLAT HIPKABI</div>
+  <h1>Pelatihan Penatalaksanaan Keperawatan Perioperatif<br>bagi Perawat Kamar Bedah</h1>
+  <p class="deskripsi">20 soal pilihan ganda dari materi pelatihan: askep perioperatif &amp; pasca operasi, cuci tangan, teknik steril-aseptik, jas &amp; sarung tangan, jarum-benang-simpul, penutupan luka, positioning, surgical safety, desain kamar bedah, etik legal, dan keprofesian.</p>
+  <div class="chips">
+    <div class="chip">📋 <b>20</b> soal pilihan ganda</div>
+    <div class="chip">⏱️ Total waktu <b>20 menit</b></div>
+    <div class="chip">🔔 <b>Alarm</b> peringatan waktu</div>
+    <div class="chip">✅ Kesempatan <b>1 kali</b> per sesi</div>
+  </div>
+  <div class="peringatan">⚠️ Jawaban terkirim <b>otomatis</b> saat waktu 20 menit habis. Pre test dan post test masing-masing hanya dapat dikerjakan <b>satu kali</b>. Dilarang merekam layar selama pengerjaan — soal akan buram bila berpindah tab/aplikasi dan setiap layar diberi watermark nama peserta. Pastikan Anda siap sebelum memulai.</div>
+  <button class="btn btn-utama" onclick="kePeserta()">🚀 Mulai Ujian</button>
+  <div class="versi">Versi 1.0 By.IT PW HIPKABI DKI JAKARTA</div>
+</div>
+
+<!-- ===== DATA PESERTA ===== -->
+<div class="kartu" id="peserta">
+  <div class="brand">PW HIPKABI DKI JAKARTA</div>
+  <h1 style="font-size:22px;">👤 Data Peserta</h1>
+  <p class="deskripsi">Isi data diri Anda sebelum memulai ujian.</p>
+  <div class="form-grup">
+    <label>Jenis Ujian</label>
+    <select id="inMode">
+      <option value="pre">Pre Test</option>
+      <option value="post">Post Test</option>
+    </select>
+    <div class="galat" id="galatMode">Sesi ini sudah pernah dikerjakan di perangkat ini.</div>
+  </div>
+  <div class="form-grup">
+    <label>Nama Lengkap</label>
+    <input id="inNama" type="text" placeholder="cth: Ns. Budi Santoso, S.Kep">
+    <div class="galat" id="galatNama">Nama tidak boleh kosong.</div>
+  </div>
+  <div class="form-grup">
+    <label>Asal Instansi</label>
+    <input id="inInstansi" type="text" placeholder="cth: RS Harapan Sehat">
+    <div class="galat" id="galatInstansi">Asal instansi tidak boleh kosong.</div>
+  </div>
+  <div class="peringatan">⏱️ Waktu ujian <b>20 menit</b> dimulai saat Anda menekan tombol di bawah dan jawaban terkirim otomatis saat waktu habis.</div>
+  <button class="btn btn-utama" onclick="mulaiUjian()">✅ Mulai Mengerjakan (20:00)</button>
+  <button class="btn btn-abu" onclick="tampil('beranda')">⬅️ Kembali ke Beranda</button>
+</div>
+
+<!-- ===== UJIAN ===== -->
+<div class="kartu" id="ujian">
+  <div class="bar-atas">
+    <div class="kotak"><small>SOAL</small><b id="posSoal">01/20</b></div>
+    <div class="kotak" id="sisaWaktu"><small>SISA WAKTU</small><b id="jam">20:00</b></div>
+  </div>
+  <div class="watermark" id="watermark"></div>
+  <div class="pesan-buram">🚫 Soal disembunyikan karena Anda berpindah tab/aplikasi.<br>Kembali ke halaman ini untuk melanjutkan. Waktu tetap berjalan.</div>
+  <div class="progres"><i id="progresIsi" style="width:5%"></i></div>
+  <div class="pertanyaan" id="teksSoal"></div>
+  <div id="wadahOpsi"></div>
+  <div class="nav">
+    <button class="btn btn-abu" id="btnPrev" onclick="pindah(-1)">⬅️ Sebelumnya</button>
+    <button class="btn btn-utama" id="btnNext" onclick="pindah(1)">Selanjutnya ➡️</button>
+    <button class="btn btn-selesai" id="btnSelesai" onclick="konfirmasiSelesai()">🏁 Selesai &amp; Kirim Jawaban</button>
+  </div>
+  <div class="nomor-grid" id="gridNomor"></div>
+</div>
+
+<!-- ===== HASIL ===== -->
+<div class="kartu" id="hasil">
+  <div class="brand">PW HIPKABI DKI JAKARTA</div>
+  <div class="label-atas" id="hasilLabel">SKOR ANDA</div>
+  <div class="skor-lingkaran" id="skorLingkaran"><b id="skorAngka">0</b><small>dari 100</small></div>
+  <p class="deskripsi" id="hasilIdentitas"></p>
+  <div class="rekap">
+    <div class="benar"><b id="jmlBenar">0</b>Benar</div>
+    <div class="salah"><b id="jmlSalah">0</b>Salah</div>
+    <div class="kosong"><b id="jmlKosong">0</b>Kosong</div>
+  </div>
+  <div class="terkunci-info">🔒 Jawaban Anda sudah terkirim. Sesi ini hanya dapat dikerjakan satu kali dan tidak dapat diulang tanpa izin panitia.</div>
+  <button class="btn btn-abu" onclick="tampil('beranda')">🏠 Kembali ke Beranda</button>
+</div>
+
+<!-- ===== TERKUNCI ===== -->
+<div class="kartu" id="terkunci">
+  <div class="brand">PW HIPKABI DKI JAKARTA</div>
+  <div class="ikon-besar">🔒</div>
+  <h1 style="font-size:21px;">Sesi Ujian Sudah Diselesaikan</h1>
+  <p class="deskripsi" id="terkunciTeks">Sesi ini hanya dapat dikerjakan <b>satu kali</b> di perangkat ini. Untuk mengulang, hubungi panitia/instruktur dan minta <b>kode izin</b>.</p>
+  <div class="form-grup">
+    <label>Kode Izin dari Panitia</label>
+    <input id="inKode" type="password" placeholder="Masukkan kode izin">
+    <div class="galat" id="galatKode">Kode izin salah.</div>
+  </div>
+  <button class="btn btn-utama" onclick="bukaKunci()">🔓 Buka Kunci &amp; Izinkan Ujian Ulang</button>
+  <button class="btn btn-abu" onclick="tampil('beranda')">🏠 Kembali ke Beranda</button>
+</div>
+
+<script>
+const KODE_IZIN = "BASICDKI";
+const DURASI_DETIK = 20 * 60;
+// ➡️ PASTE URL WEB APP APPS SCRIPT DI ANTARA TANDA KUTIP DI BAWAH INI
+// (lihat file "APPS SCRIPT PENERIMA HASIL - CARA PASANG.txt")
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxcnXNXmgO5ip8Fp9to5s8Iwr3THT0T_4vJdxEPU4G380c8Qs5E_WjEXP1dHoJ2eFCN/exec";
+const SOAL = [
+ {q:"Standar suhu dan kelembaban udara kamar operasi di daerah tropis adalah ....",o:["suhu 25 – 30 °C dengan kelembaban 60 – 80%","suhu 15 – 18 °C dengan kelembaban 30 – 40%","suhu 20 – 28 °C dengan kelembaban 70 – 90%","suhu 19 – 24 °C dengan kelembaban 45 – 60%"],k:3},
+ {q:"Teknik memakai sarung tangan steril yang direkomendasikan bagi tim bedah setelah memakai jas operasi adalah ....",o:["teknik terbuka tanpa menyentuh bagian luar sarung tangan","teknik bebas sesuai kenyamanan perawat","teknik terbuka dengan bantuan asisten","teknik tertutup, tangan tidak keluar melewati manset jas"],k:3},
+ {q:"Pasien berbaring terlentang dengan meja dimiringkan sehingga kepala lebih rendah ±15°, umum digunakan pada operasi laparoskopi daerah panggul/perut bagian bawah. Posisi ini disebut ....",o:["posisi Fowler","posisi Trendelenburg","posisi reverse Trendelenburg","posisi jackknife"],k:1},
+ {q:"Fase penyembuhan luka yang ditandai pembentukan jaringan baru melalui proses granulasi dan epitelisasi pada hari ke-4 sampai hari ke-21 adalah fase ....",o:["maturasi/remodeling","hemostasis","proliferasi","inflamasi"],k:2},
+ {q:"Penilaian tingkat kesadaran pasien pasca operasi dilakukan dengan menggunakan Glasgow Coma Scale (GCS) yang terdiri dari tiga komponen, yaitu ....",o:["refleks pupil, refleks batuk, dan refleks menelan","tekanan darah, nadi, dan pernapasan","respon buka mata, respon verbal, dan respon motorik","orientasi waktu, tempat, dan orang"],k:2},
+ {q:"Lama waktu cuci tangan prosedural apabila menggunakan sabun dan air mengalir adalah ....",o:["40 – 60 detik","20 – 30 detik","10 – 15 detik","2 – 5 menit"],k:0},
+ {q:"Larutan antiseptik yang direkomendasikan untuk cuci tangan pembedahan adalah ....",o:["Chlorhexidine 4%","Alkohol 70%","Povidone iodine 10%","Hydrogen peroxide 3%"],k:0},
+ {q:"Salah satu keuntungan benang monofilamen dibandingkan benang multifilamen (braided) adalah ....",o:["kekuatan tarik (tensile strength) lebih besar","harganya lebih murah dan mudah didapat","trauma minimal saat melewati jaringan dan mencegah melekatnya mikroorganisme","lebih lentur dan fleksibel saat disimpul"],k:2},
+ {q:"Tujuan utama program ERAS (Enhanced Recovery After Surgery) adalah ....",o:["menunda mobilisasi pasien sampai luka operasi sembuh sempurna","mengoptimalkan perawatan perioperatif dan mempercepat pemulihan pasca operasi","memperpanjang masa perawatan agar pemantauan lebih optimal","menggantikan peran tim anestesi dalam pembedahan"],k:1},
+ {q:"Prinsip etik keperawatan yang menekankan bahwa perawat tidak boleh menimbulkan bahaya atau cedera fisik dan psikologis pada klien disebut ....",o:["nonmaleficence","otonomi","beneficence","fidelity"],k:0},
+ {q:"Apabila terdapat keraguan terhadap sterilitas suatu alat, maka tindakan yang tepat adalah ....",o:["alat cukup dilap dengan alkohol sebelum digunakan","alat dianggap tidak steril dan tidak digunakan","alat digunakan setelah disemprot antiseptik","alat tetap digunakan karena masih dalam kemasan"],k:1},
+ {q:"Komponen kompetensi yang harus dimiliki perawat kamar bedah dalam memberikan asuhan keperawatan profesional mencakup ....",o:["pendidikan, jabatan, dan masa kerja","sertifikat, seragam, dan pengalaman organisasi","pengetahuan, sikap, dan keterampilan","kekuatan fisik, kecepatan, dan ketelitian"],k:2},
+ {q:"Menurut prinsip teknik steril, alat steril yang berada di bawah batas pinggang dianggap ....",o:["tidak steril","steril apabila kemasan masih utuh","steril apabila segera diangkat kembali","tetap steril selama tidak tersentuh"],k:0},
+ {q:"Benang bedah absorbable alami (misalnya plain catgut) diserap oleh tubuh melalui proses ....",o:["enzimatik","fagositosis mekanik","oksidasi","hidrolisis"],k:0},
+ {q:"Periode perioperatif merupakan episode total dari pembedahan yang terdiri dari tiga tahapan, yaitu ....",o:["fase anestesi, fase insisi, dan fase penutupan luka","fase pengkajian, fase diagnosis, dan fase evaluasi","fase pre-operatif, fase intra-operatif, dan fase post-operatif","fase persiapan, fase pembedahan, dan fase pemulangan"],k:2},
+ {q:"Verifikasi kelengkapan jumlah instrumen, kassa (gas verband), dan jarum agar tidak tertinggal di dalam tubuh pasien dilakukan pada fase ....",o:["Time Out","Sign Out","Sign In","Briefing"],k:1},
+ {q:"Posisi pembedahan yang umum digunakan untuk operasi urologi, ginekologi, perineum, atau anus adalah ....",o:["posisi prone","posisi supine","posisi litotomi","posisi lateral"],k:2},
+ {q:"Jenis modern dressing yang terbuat dari rumput laut, membentuk gel di atas permukaan luka, dan mampu menyerap eksudat dalam jumlah banyak adalah ....",o:["hydrocolloid","foam dressing","alginate","transparent film"],k:2},
+ {q:"Fase Time Out pada Surgical Safety Checklist WHO dilaksanakan pada saat ....",o:["sebelum insisi kulit","sebelum induksi anestesi","sebelum pasien meninggalkan kamar operasi","setelah pasien tiba di ruang pemulihan"],k:0},
+ {q:"Bagian jas operasi yang dianggap steril setelah dikenakan adalah ....",o:["hanya bagian lengan jas dari bahu sampai manset","bagian belakang jas yang tertutup overslag","seluruh bagian jas depan dan belakang","bagian depan antara bahu sampai pinggang dan lengan bawah sampai 2 inci di bawah siku"],k:3}
+];
+const HURUF = ["A","B","C","D"];
+const N = SOAL.length;
+
+let jawaban = Array(N).fill(null);
+let idx = 0, sisa = DURASI_DETIK, timerId = null, sudahKirim = false;
+let peserta = {nama:"", instansi:"", mode:"pre"};
+let alarm5Bunyi = false, alarm1Bunyi = false;
+
+function kunciKey(mode){ return "hipkabi_basic_" + mode + "_selesai"; }
+
+function tampil(id){
+  document.querySelectorAll(".kartu").forEach(k=>k.classList.remove("aktif"));
+  document.getElementById(id).classList.add("aktif");
+}
+
+function kePeserta(){
+  tampil("peserta");
+  cekModeTerkunci();
+}
+document.addEventListener("change", e=>{ if(e.target.id==="inMode") cekModeTerkunci(); });
+function cekModeTerkunci(){
+  const mode = document.getElementById("inMode").value;
+  document.getElementById("galatMode").style.display = localStorage.getItem(kunciKey(mode)) ? "block" : "none";
+}
+
+function mulaiUjian(){
+  const nama = document.getElementById("inNama").value.trim();
+  const instansi = document.getElementById("inInstansi").value.trim();
+  const mode = document.getElementById("inMode").value;
+  let ok = true;
+  document.getElementById("galatNama").style.display = nama ? "none":"block"; if(!nama) ok=false;
+  document.getElementById("galatInstansi").style.display = instansi ? "none":"block"; if(!instansi) ok=false;
+  if(localStorage.getItem(kunciKey(mode))){
+    document.getElementById("terkunciTeks").innerHTML =
+      (mode==="pre"?"Pre test":"Post test") + " hanya dapat dikerjakan <b>satu kali</b> di perangkat ini. Untuk mengulang, hubungi panitia/instruktur dan minta <b>kode izin</b>.";
+    tampil("terkunci"); return;
+  }
+  if(!ok) return;
+  peserta = {nama, instansi, mode};
+  jawaban = Array(N).fill(null); idx = 0; sisa = DURASI_DETIK; sudahKirim = false;
+  alarm5Bunyi = false; alarm1Bunyi = false;
+  if("Notification" in window && Notification.permission === "default") Notification.requestPermission();
+  buatGrid(); buatWatermark(); render(); tampil("ujian");
+  document.getElementById("jam").textContent = fmt(sisa);
+  document.getElementById("sisaWaktu").classList.remove("bahaya");
+  clearInterval(timerId);
+  timerId = setInterval(detak, 1000);
+}
+
+function buatWatermark(){
+  const w = document.getElementById("watermark"); w.innerHTML = "";
+  const teks = peserta.nama + " • " + peserta.instansi + " • " + new Date().toLocaleDateString("id-ID");
+  for(let i=0;i<12;i++){
+    const s = document.createElement("span");
+    s.textContent = teks;
+    s.style.top = (i*9) + "%";
+    s.style.left = ((i%3)*30 - 10) + "%";
+    w.appendChild(s);
+  }
+}
+
+function detak(){
+  sisa--;
+  document.getElementById("jam").textContent = fmt(sisa);
+  if(sisa <= 300) document.getElementById("sisaWaktu").classList.add("bahaya");
+  if(sisa === 300 && !alarm5Bunyi){ alarm5Bunyi = true; bunyi(3); notif("⏱️ Sisa waktu 5 menit!"); }
+  if(sisa === 60 && !alarm1Bunyi){ alarm1Bunyi = true; bunyi(5); notif("⚠️ Sisa waktu 1 menit!"); }
+  if(sisa <= 0){ clearInterval(timerId); kirim(true); }
+}
+function fmt(d){ d = Math.max(0,d); return String(Math.floor(d/60)).padStart(2,"0") + ":" + String(d%60).padStart(2,"0"); }
+
+function bunyi(n){
+  try{
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    for(let i=0;i<n;i++){
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value = 880; o.type = "sine";
+      const t = ctx.currentTime + i*0.4;
+      g.gain.setValueAtTime(0.001,t); g.gain.exponentialRampToValueAtTime(0.4,t+0.03); g.gain.exponentialRampToValueAtTime(0.001,t+0.3);
+      o.start(t); o.stop(t+0.35);
+    }
+  }catch(e){}
+}
+function notif(pesan){
+  if("Notification" in window && Notification.permission === "granted"){
+    try{ new Notification("Ujian HIPKABI", {body:pesan}); }catch(e){}
+  }
+}
+
+function buatGrid(){
+  const g = document.getElementById("gridNomor"); g.innerHTML = "";
+  for(let i=0;i<N;i++){
+    const s = document.createElement("span");
+    s.textContent = i+1;
+    s.onclick = ()=>{ idx = i; render(); };
+    g.appendChild(s);
+  }
+}
+
+function render(){
+  const s = SOAL[idx];
+  document.getElementById("posSoal").textContent = String(idx+1).padStart(2,"0") + "/" + N;
+  document.getElementById("progresIsi").style.width = ((idx+1)/N*100) + "%";
+  document.getElementById("teksSoal").textContent = (idx+1) + ". " + s.q;
+  const w = document.getElementById("wadahOpsi"); w.innerHTML = "";
+  s.o.forEach((op,j)=>{
+    const d = document.createElement("div");
+    d.className = "opsi" + (jawaban[idx]===j ? " dipilih":"");
+    d.innerHTML = '<span class="huruf">'+HURUF[j]+'.</span><span>'+op+'</span>';
+    d.onclick = ()=>{ jawaban[idx]=j; render(); };
+    w.appendChild(d);
+  });
+  document.getElementById("btnPrev").style.visibility = idx===0 ? "hidden":"visible";
+  document.getElementById("btnNext").style.display = idx===N-1 ? "none":"block";
+  document.getElementById("btnSelesai").style.display = idx===N-1 ? "block":"none";
+  document.querySelectorAll("#gridNomor span").forEach((el,i)=>{
+    el.className = (jawaban[i]!==null ? "terjawab":"") + (i===idx ? " sekarang":"");
+  });
+}
+
+function pindah(arah){ idx = Math.min(N-1, Math.max(0, idx+arah)); render(); }
+
+function konfirmasiSelesai(){
+  const kosong = jawaban.filter(j=>j===null).length;
+  const pesan = kosong>0
+    ? "Masih ada " + kosong + " soal belum dijawab. Yakin ingin mengirim jawaban sekarang?"
+    : "Yakin ingin mengirim jawaban? Ujian tidak dapat diulang.";
+  if(confirm(pesan)) kirim(false);
+}
+
+function kirim(otomatis){
+  if(sudahKirim) return; sudahKirim = true;
+  clearInterval(timerId);
+  let benar=0, salah=0, kosong=0;
+  jawaban.forEach((j,i)=>{ if(j===null) kosong++; else if(j===SOAL[i].k) benar++; else salah++; });
+  const skor = Math.round(benar/N*100);
+  localStorage.setItem(kunciKey(peserta.mode), JSON.stringify({
+    nama:peserta.nama, instansi:peserta.instansi, skor, benar, salah, kosong, waktu:new Date().toISOString()
+  }));
+  kirimKeSpreadsheet(skor, benar, salah, kosong, otomatis);
+  document.getElementById("hasilLabel").textContent = "SKOR " + (peserta.mode==="pre"?"PRE TEST":"POST TEST");
+  document.getElementById("skorAngka").textContent = skor;
+  document.getElementById("jmlBenar").textContent = benar;
+  document.getElementById("jmlSalah").textContent = salah;
+  document.getElementById("jmlKosong").textContent = kosong;
+  document.getElementById("hasilIdentitas").innerHTML = "<b>"+esc(peserta.nama)+"</b> — "+esc(peserta.instansi) + (otomatis ? "<br><i>(terkirim otomatis karena waktu habis)</i>":"");
+  const l = document.getElementById("skorLingkaran");
+  l.style.background = skor>=80 ? "linear-gradient(145deg,#2e7d32,#66bb6a)" : skor>=60 ? "linear-gradient(145deg,#f9a825,#ffd54f)" : "linear-gradient(145deg,#c62828,#ef5350)";
+  if(otomatis){ bunyi(4); notif("Waktu habis — jawaban terkirim otomatis. Skor: "+skor); }
+  tampil("hasil");
+}
+function esc(t){ const d=document.createElement("div"); d.textContent=t; return d.innerHTML; }
+
+function kirimKeSpreadsheet(skor, benar, salah, kosong, otomatis){
+  if(!SCRIPT_URL || !SCRIPT_URL.startsWith("http")) return;
+  const isi = {
+    waktu: new Date().toLocaleString("id-ID"),
+    jenis: peserta.mode==="pre" ? "PRE TEST" : "POST TEST",
+    nama: peserta.nama,
+    instansi: peserta.instansi,
+    skor: skor, benar: benar, salah: salah, kosong: kosong,
+    pengiriman: otomatis ? "Otomatis (waktu habis)" : "Manual"
+  };
+  jawaban.forEach((j,i)=>{
+    isi["j"+(i+1)] = (j===null) ? "-" : HURUF[j];              // huruf yang dipilih
+    isi["b"+(i+1)] = (j===null) ? "" : (j===SOAL[i].k ? 1:0);  // 1 benar, 0 salah, kosong dibiarkan
+  });
+  const data = new URLSearchParams(isi);
+  fetch(SCRIPT_URL, {method:"POST", mode:"no-cors", body:data}).catch(()=>{});
+}
+
+// ===== PROTEKSI LAYAR SELAMA UJIAN =====
+function ujianAktif(){ return document.getElementById("ujian").classList.contains("aktif") && !sudahKirim; }
+function setBuram(b){ document.getElementById("ujian").classList.toggle("buram", b && ujianAktif()); }
+document.addEventListener("visibilitychange", ()=> setBuram(document.hidden));
+window.addEventListener("blur", ()=> setBuram(true));
+window.addEventListener("focus", ()=> setBuram(false));
+document.addEventListener("contextmenu", e=>{ if(ujianAktif()) e.preventDefault(); });
+document.addEventListener("copy", e=>{ if(ujianAktif()) e.preventDefault(); });
+document.addEventListener("selectstart", e=>{ if(ujianAktif()) e.preventDefault(); });
+document.addEventListener("keydown", e=>{
+  if(!ujianAktif()) return;
+  if((e.ctrlKey||e.metaKey) && ["c","p","s","u"].includes(e.key.toLowerCase())) e.preventDefault();
+  if(e.key === "PrintScreen") setBuram(true);
+});
+
+function bukaKunci(){
+  const kode = document.getElementById("inKode").value.trim();
+  if(kode === KODE_IZIN){
+    localStorage.removeItem(kunciKey("pre"));
+    localStorage.removeItem(kunciKey("post"));
+    document.getElementById("inKode").value = "";
+    document.getElementById("galatKode").style.display = "none";
+    alert("Kunci dibuka. Ujian dapat dikerjakan kembali.");
+    tampil("peserta"); cekModeTerkunci();
+  }else{
+    document.getElementById("galatKode").style.display = "block";
+  }
+}
+
+window.addEventListener("beforeunload", e=>{
+  if(document.getElementById("ujian").classList.contains("aktif") && !sudahKirim){
+    e.preventDefault(); e.returnValue = "";
+  }
+});
+</script>
+</body>
+</html>
